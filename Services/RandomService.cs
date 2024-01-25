@@ -1,8 +1,8 @@
-﻿using ProvaPub.Interfaces;
+﻿using ProvaPub.Services.Interfaces;
 
 namespace ProvaPub.Services
 {
-	public class RandomService : IRandomService
+    public class RandomService : IRandomService
 	{
 		public RandomService()
 		{
