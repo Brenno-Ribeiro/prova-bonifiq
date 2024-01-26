@@ -24,6 +24,11 @@ namespace ProvaPub.Repository
 
         }
 
+        public async Task<T> GetById(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+
         public async Task<int> GetTotaItems()
         {
             var result = _context.Set<T>().AsQueryable();

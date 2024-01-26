@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProvaPub.Interfaces;
 using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Repository.intefaces;
+using ProvaPub.Services.Interfaces;
 
 namespace ProvaPub.Services
 {
@@ -36,6 +36,11 @@ namespace ProvaPub.Services
             return customerList;
         }
 
+        public async Task<Customer> GetById(int id)
+        {
+            return await _customerRepository.GetById(id);
+        }
+
         public async Task<bool> CanPurchase(int customerId, decimal purchaseValue)
         {
             if (customerId <= 0) throw new ArgumentOutOfRangeException(nameof(customerId));
@@ -60,5 +65,6 @@ namespace ProvaPub.Services
             return true;
         }
 
+        
     }
 }

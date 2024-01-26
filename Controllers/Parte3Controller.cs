@@ -2,6 +2,7 @@
 using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Services;
+using ProvaPub.Services.Interfaces;
 
 namespace ProvaPub.Controllers
 {
@@ -16,10 +17,37 @@ namespace ProvaPub.Controllers
 	[Route("[controller]")]
 	public class Parte3Controller :  ControllerBase
 	{
-		[HttpGet("orders")]
-		public async Task<Order> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
+
+		private readonly IOrderService _orderService;
+        private readonly ICustomerService _customerService;
+
+        public Parte3Controller(IOrderService orderService, ICustomerService customerService)
+        {
+            _orderService = orderService;
+            _customerService = customerService;
+        }
+
+        [HttpGet("orders")]
+		public async Task<IActionResult> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
 		{
-			return await new OrderService().PayOrder(paymentMethod, paymentValue, customerId);
+			var costumer = await _customerService.GetById(customerId);
+
+			if(costumer == null)
+			{
+				return NotFound(new { message = "O cliente informado não existe!" });
+			}
+
+			try
+			{
+                var result = await _orderService.PayOrder(paymentMethod, paymentValue, costumer);
+                return Ok(result);
+            }
+			catch (Exception ex)
+			{
+
+                return BadRequest(ex.Message);
+            }
+			
 		}
 	}
 }

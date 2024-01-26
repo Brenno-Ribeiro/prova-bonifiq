@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ProvaPub.Interfaces;
 using ProvaPub.Repository;
 using ProvaPub.Repository.intefaces;
 using ProvaPub.Services;
@@ -20,8 +19,8 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-
-
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IRandomService,RandomService>();
 
 builder.Services.AddDbContext<TestDbContext>(options =>
