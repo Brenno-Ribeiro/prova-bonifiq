@@ -23,7 +23,7 @@ namespace ProvaPub.Tests
         }
 
 
-        [Theory(DisplayName = "Checks if the customer id is greater than zero")]
+        [Theory(DisplayName = "Checks if the customer id is greater than zero ")]
         [InlineData(5)]
         [InlineData(10)]
         public void CanPurchase_VerifyValue_Valid_CustomerId_ReturnTrue(int value)
