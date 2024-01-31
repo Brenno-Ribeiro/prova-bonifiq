@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProvaPub.Repository.intefaces;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ProvaPub.Repository
 {
@@ -12,6 +14,11 @@ namespace ProvaPub.Repository
             _context = context; 
         }
 
+        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().CountAsync(predicate);
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync(int page, int pageSize)
         {
             var result = _context.Set<T>().AsQueryable();
@@ -21,7 +28,6 @@ namespace ProvaPub.Repository
                 .Take(pageSize)
                 .AsNoTracking()
                 .ToListAsync();
-
         }
 
         public async Task<T> GetById(int id)
