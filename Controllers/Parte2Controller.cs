@@ -6,21 +6,21 @@ using ProvaPub.Services.Interfaces;
 
 namespace ProvaPub.Controllers
 {
+	
+	[ApiController]
+	[Route("[controller]")]
+	public class Parte2Controller :  ControllerBase
+	{
+		/// <summary>
+		/// Precisamos fazer algumas alterações:
+		/// 1 - Não importa qual page é informada, sempre são retornados os mesmos resultados. Faça a correção.
+		/// 2 - Altere os códigos abaixo para evitar o uso de "new", como em "new ProductService()". Utilize a Injeção de Dependência para resolver esse problema
+		/// 3 - Dê uma olhada nos arquivos /Models/CustomerList e /Models/ProductList. Veja que há uma estrutura que se repete. 
+		/// Como você faria pra criar uma estrutura melhor, com menos repetição de código? E quanto ao CustomerService/ProductService. Você acha que seria possível evitar a repetição de código?
+		/// 
+		/// </summary>
 
-    [ApiController]
-    [Route("[controller]")]
-    public class Parte2Controller : ControllerBase
-    {
-        /// <summary>
-        /// Precisamos fazer algumas alterações:
-        /// 1 - Não importa qual page é informada, sempre são retornados os mesmos resultados. Faça a correção.
-        /// 2 - Altere os códigos abaixo para evitar o uso de "new", como em "new ProductService()". Utilize a Injeção de Dependência para resolver esse problema
-        /// 3 - Dê uma olhada nos arquivos /Models/CustomerList e /Models/ProductList. Veja que há uma estrutura que se repete. 
-        /// Como você faria pra criar uma estrutura melhor, com menos repetição de código? E quanto ao CustomerService/ProductService. Você acha que seria possível evitar a repetição de código?
-        /// 
-        /// </summary>
-
-        private readonly IProductService _productService;
+		private readonly IProductService _productService;
         private readonly ICustomerService _customerService;
 
         public Parte2Controller(IProductService productService, ICustomerService customerService)
@@ -29,32 +29,22 @@ namespace ProvaPub.Controllers
             _customerService = customerService;
         }
 
-        [HttpGet("products")]
-        public async Task<IActionResult> ListProducts(int page = 1, int pageSize = 10)
-        {
-            if (page < 1)
-            {
-                return BadRequest($"The minimum value for the 'page' parameter is 1. {nameof(page)}");
-            }
+        [HttpGet("products/{page:min(1)}/{pageSize:min(1):max(10)}")]
+		public async Task<IActionResult> ListProducts(int page, int pageSize = 10)
+		{
+			var products = await _productService.GetAllAsync(page, pageSize);
 
-            var products = await _productService.GetAllAsync(page, pageSize);
+			if (products.Result?.Count() == 0)
+			{
+				return NotFound();
+			}
 
-            if (products.Result?.Count() == 0)
-            {
-                return NotFound();
-            }
+			return Ok(products);
+		}
 
-            return Ok(products);
-        }
-
-        [HttpGet("customers")]
-        public async Task<IActionResult> ListCustomers(int page = 1, int pageSize = 10)
-        {
-            if (page < 1)
-            {
-                return BadRequest($"The minimum value for the 'page' parameter is 1. {nameof(page)}");
-            }
-
+		[HttpGet("customers/{page:min(1)}/{pageSize:min(1):max(10)}")]
+		public async Task<IActionResult> ListCustomers(int page, int pageSize = 10)
+		{
             var customer = await _customerService.GetAllAsync(page, pageSize);
 
             if (customer.Result?.Count() == 0)
@@ -64,5 +54,5 @@ namespace ProvaPub.Controllers
 
             return Ok(customer);
         }
-    }
+	}
 }
